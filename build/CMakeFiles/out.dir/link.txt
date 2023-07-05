@@ -1,0 +1,1 @@
+icpx CMakeFiles/out.dir/main_calc.cpp.o -o out/out  libmy_library.a 
