@@ -1,1 +1,0 @@
-icpx  -O3 CMakeFiles/out.dir/main_calc.cpp.o -o out/out  src/core/libcore.a src/numerical/libnumerical.a src/analytical/libanalytical.a src/option/liboption.a src/monte_carlo/libmonte_carlo.a src/fourier/libfourier.a src/numerical/libnumerical.a src/analytical/libanalytical.a 
