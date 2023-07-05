@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/home/endo/Drive_Lab/Finance/Calc/src
 
-CXX_FLAGS = -std=gnu++17
+CXX_FLAGS =  -O3 -std=gnu++17
 

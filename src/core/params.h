@@ -13,6 +13,7 @@ public:
     std::map< std::string, std::map<std::string, std::string> > sdata;
     void readParameters(const std::string& filename);
     void setVariable(const std::string&, const std::string&, const std::string&);
+    void initVariable() { index_variable = 0; }
     bool updateVariable();
     double getVariable(){return data[workingsection][variablename];}
 };

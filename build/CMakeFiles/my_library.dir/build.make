@@ -167,10 +167,24 @@ CMakeFiles/my_library.dir/src/numerical/integral.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/my_library.dir/src/numerical/integral.cpp.s"
 	icpx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/endo/Drive_Lab/Finance/Calc/src/numerical/integral.cpp -o CMakeFiles/my_library.dir/src/numerical/integral.cpp.s
 
+CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.o: CMakeFiles/my_library.dir/flags.make
+CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.o: ../src/numerical/special_functions.cpp
+CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.o: CMakeFiles/my_library.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/endo/Drive_Lab/Finance/Calc/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.o"
+	icpx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.o -MF CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.o.d -o CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.o -c /home/endo/Drive_Lab/Finance/Calc/src/numerical/special_functions.cpp
+
+CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.i"
+	icpx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/endo/Drive_Lab/Finance/Calc/src/numerical/special_functions.cpp > CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.i
+
+CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.s"
+	icpx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/endo/Drive_Lab/Finance/Calc/src/numerical/special_functions.cpp -o CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.s
+
 CMakeFiles/my_library.dir/src/option/european.cpp.o: CMakeFiles/my_library.dir/flags.make
 CMakeFiles/my_library.dir/src/option/european.cpp.o: ../src/option/european.cpp
 CMakeFiles/my_library.dir/src/option/european.cpp.o: CMakeFiles/my_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/endo/Drive_Lab/Finance/Calc/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/my_library.dir/src/option/european.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/endo/Drive_Lab/Finance/Calc/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/my_library.dir/src/option/european.cpp.o"
 	icpx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/my_library.dir/src/option/european.cpp.o -MF CMakeFiles/my_library.dir/src/option/european.cpp.o.d -o CMakeFiles/my_library.dir/src/option/european.cpp.o -c /home/endo/Drive_Lab/Finance/Calc/src/option/european.cpp
 
 CMakeFiles/my_library.dir/src/option/european.cpp.i: cmake_force
@@ -184,7 +198,7 @@ CMakeFiles/my_library.dir/src/option/european.cpp.s: cmake_force
 CMakeFiles/my_library.dir/src/option/implied_vol.cpp.o: CMakeFiles/my_library.dir/flags.make
 CMakeFiles/my_library.dir/src/option/implied_vol.cpp.o: ../src/option/implied_vol.cpp
 CMakeFiles/my_library.dir/src/option/implied_vol.cpp.o: CMakeFiles/my_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/endo/Drive_Lab/Finance/Calc/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/my_library.dir/src/option/implied_vol.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/endo/Drive_Lab/Finance/Calc/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/my_library.dir/src/option/implied_vol.cpp.o"
 	icpx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/my_library.dir/src/option/implied_vol.cpp.o -MF CMakeFiles/my_library.dir/src/option/implied_vol.cpp.o.d -o CMakeFiles/my_library.dir/src/option/implied_vol.cpp.o -c /home/endo/Drive_Lab/Finance/Calc/src/option/implied_vol.cpp
 
 CMakeFiles/my_library.dir/src/option/implied_vol.cpp.i: cmake_force
@@ -198,7 +212,7 @@ CMakeFiles/my_library.dir/src/option/implied_vol.cpp.s: cmake_force
 CMakeFiles/my_library.dir/src/option/option_core.cpp.o: CMakeFiles/my_library.dir/flags.make
 CMakeFiles/my_library.dir/src/option/option_core.cpp.o: ../src/option/option_core.cpp
 CMakeFiles/my_library.dir/src/option/option_core.cpp.o: CMakeFiles/my_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/endo/Drive_Lab/Finance/Calc/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/my_library.dir/src/option/option_core.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/endo/Drive_Lab/Finance/Calc/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/my_library.dir/src/option/option_core.cpp.o"
 	icpx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/my_library.dir/src/option/option_core.cpp.o -MF CMakeFiles/my_library.dir/src/option/option_core.cpp.o.d -o CMakeFiles/my_library.dir/src/option/option_core.cpp.o -c /home/endo/Drive_Lab/Finance/Calc/src/option/option_core.cpp
 
 CMakeFiles/my_library.dir/src/option/option_core.cpp.i: cmake_force
@@ -218,6 +232,7 @@ my_library_OBJECTS = \
 "CMakeFiles/my_library.dir/src/numerical/fft.cpp.o" \
 "CMakeFiles/my_library.dir/src/numerical/find_root.cpp.o" \
 "CMakeFiles/my_library.dir/src/numerical/integral.cpp.o" \
+"CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.o" \
 "CMakeFiles/my_library.dir/src/option/european.cpp.o" \
 "CMakeFiles/my_library.dir/src/option/implied_vol.cpp.o" \
 "CMakeFiles/my_library.dir/src/option/option_core.cpp.o"
@@ -232,12 +247,13 @@ libmy_library.a: CMakeFiles/my_library.dir/src/monte_carlo/process.cpp.o
 libmy_library.a: CMakeFiles/my_library.dir/src/numerical/fft.cpp.o
 libmy_library.a: CMakeFiles/my_library.dir/src/numerical/find_root.cpp.o
 libmy_library.a: CMakeFiles/my_library.dir/src/numerical/integral.cpp.o
+libmy_library.a: CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.o
 libmy_library.a: CMakeFiles/my_library.dir/src/option/european.cpp.o
 libmy_library.a: CMakeFiles/my_library.dir/src/option/implied_vol.cpp.o
 libmy_library.a: CMakeFiles/my_library.dir/src/option/option_core.cpp.o
 libmy_library.a: CMakeFiles/my_library.dir/build.make
 libmy_library.a: CMakeFiles/my_library.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/endo/Drive_Lab/Finance/Calc/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX static library libmy_library.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/endo/Drive_Lab/Finance/Calc/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX static library libmy_library.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/my_library.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/my_library.dir/link.txt --verbose=$(VERBOSE)
 

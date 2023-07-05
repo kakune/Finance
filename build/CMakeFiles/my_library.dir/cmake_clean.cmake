@@ -13,6 +13,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/my_library.dir/src/numerical/find_root.cpp.o.d"
   "CMakeFiles/my_library.dir/src/numerical/integral.cpp.o"
   "CMakeFiles/my_library.dir/src/numerical/integral.cpp.o.d"
+  "CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.o"
+  "CMakeFiles/my_library.dir/src/numerical/special_functions.cpp.o.d"
   "CMakeFiles/my_library.dir/src/option/european.cpp.o"
   "CMakeFiles/my_library.dir/src/option/european.cpp.o.d"
   "CMakeFiles/my_library.dir/src/option/implied_vol.cpp.o"

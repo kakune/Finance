@@ -1,5 +1,5 @@
-#ifndef OPTION_MODULE_H
-#define OPTION_MODULE_H
+#ifndef OPTION_OPTION_CORE_H
+#define OPTION_OPTION_CORE_H
 
 #include <cstddef>
 #include <vector>
@@ -15,7 +15,7 @@ protected:
 public:
     virtual double payoff(double) = 0;
     virtual void calc_payoff_mean() = 0;
-    double get_payoff_mean() const {return payoff_mean;}
+    double get_payoff_mean() const { return payoff_mean; }
     virtual void set_present_spots(std::vector< double > present_spots_) {present_spots = present_spots_; num_path = present_spots.size();}
     virtual void set_spot_paths(std::vector< std::vector< double > > spot_paths_)
     {
@@ -99,7 +99,8 @@ public:
 };
 
 template <class T, class U>
-std::shared_ptr<VirtualOption> operator+(std::shared_ptr<T>& obj1, std::shared_ptr<U>& obj2) {
+std::shared_ptr<VirtualOption> operator+(std::shared_ptr<T>& obj1, std::shared_ptr<U>& obj2)
+{
     static_assert(std::is_base_of<Option, T>::value, "T must be a descendant of A");
     static_assert(std::is_base_of<Option, U>::value, "U must be a descendant of A");
     std::shared_ptr<VirtualOption> resultObj = std::make_shared<VirtualOption>();
@@ -109,7 +110,8 @@ std::shared_ptr<VirtualOption> operator+(std::shared_ptr<T>& obj1, std::shared_p
 }
 
 template <class T, class U>
-std::shared_ptr<VirtualOption> operator-(std::shared_ptr<T>& obj1, std::shared_ptr<U>& obj2) {
+std::shared_ptr<VirtualOption> operator-(std::shared_ptr<T>& obj1, std::shared_ptr<U>& obj2)
+{
     static_assert(std::is_base_of<Option, T>::value, "T must be a descendant of A");
     static_assert(std::is_base_of<Option, U>::value, "U must be a descendant of A");
     std::shared_ptr<VirtualOption> resultObj = std::make_shared<VirtualOption>();

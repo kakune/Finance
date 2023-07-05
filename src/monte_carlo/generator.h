@@ -1,5 +1,5 @@
-#ifndef GENERATOR_MODULE_H
-#define GENERATOR_MODULE_H
+#ifndef MONTE_CARLO_GENERATOR_H
+#define MONTE_CARLO_GENERATOR_H
 
 #include <random>
 #include <vector>

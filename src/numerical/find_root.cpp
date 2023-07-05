@@ -5,12 +5,12 @@
 #include <iostream>
 #include <limits>
 
-double BrentSolver::solve(std::function<double(double)> func)
+double BrentSolver::solve()
 {
     double reg_min_temp = reg_min;
     double reg_max_temp = reg_max;
-    double fa = func(reg_min_temp);
-    double fb = func(reg_max_temp);
+    double fa = objectiveFunction(reg_min_temp);
+    double fb = objectiveFunction(reg_max_temp);
 
     if (fa * fb > 0) {
         // throw std::runtime_error("Root must be bracketed in BrentSolver.");
@@ -27,7 +27,7 @@ double BrentSolver::solve(std::function<double(double)> func)
     double s = 0, d = 0;
 
     for (int iter = 0; iter < maxIter; iter++) {
-        double fs = func(s);
+        double fs = objectiveFunction(s);
 
         if (fa != fc && fb != fc) {
             s = reg_min_temp * fb * fc / ((fa - fb) * (fa - fc)) + reg_max_temp * fa * fc / ((fb - fa) * (fb - fc)) + c * fa * fb / ((fc - fa) * (fc - fb));
@@ -45,7 +45,7 @@ double BrentSolver::solve(std::function<double(double)> func)
             mflag = false;
         }
 
-        fs = func(s);
+        fs = objectiveFunction(s);
         d = c;
         c = reg_max_temp;
 

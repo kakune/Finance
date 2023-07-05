@@ -7,14 +7,16 @@
 
 void Parameters::readParameters(const std::string& filename) {
     std::ifstream param_file(filename);
-    if(!param_file) {
+    if ( !param_file )
+    {
         std::cerr << "Could not open parameter file: " << filename << std::endl;
         return;
     }
 
     std::string line;
     std::string section = "DEFAULT";
-    while(std::getline(param_file, line)) {
+    while ( std::getline(param_file, line) )
+    {
         std::istringstream iss(line);
         std::string name, delim;
         std::string svalue;
@@ -51,7 +53,7 @@ void Parameters::setVariable(const std::string& variablesection_, const std::str
 }
 bool Parameters::updateVariable()
 {
-    if(index_variable >= num_variable){return false;}
+    if ( index_variable >= num_variable ) {return false;}
     data[workingsection][variablename] = start + step * index_variable;
     index_variable++;
     return true;

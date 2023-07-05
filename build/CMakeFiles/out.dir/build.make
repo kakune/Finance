@@ -92,7 +92,14 @@ out_EXTERNAL_OBJECTS =
 
 out/out: CMakeFiles/out.dir/main_calc.cpp.o
 out/out: CMakeFiles/out.dir/build.make
-out/out: libmy_library.a
+out/out: src/core/libcore.a
+out/out: src/numerical/libnumerical.a
+out/out: src/analytical/libanalytical.a
+out/out: src/option/liboption.a
+out/out: src/monte_carlo/libmonte_carlo.a
+out/out: src/fourier/libfourier.a
+out/out: src/numerical/libnumerical.a
+out/out: src/analytical/libanalytical.a
 out/out: CMakeFiles/out.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/endo/Drive_Lab/Finance/Calc/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable out/out"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/out.dir/link.txt --verbose=$(VERBOSE)

@@ -1,5 +1,5 @@
-#ifndef PROCESS_MODULE_H
-#define PROCESS_MODULE_H
+#ifndef MONTE_CARLO_PROCESS_H
+#define MONTE_CARLO_PROCESS_H
 
 #include "generator.h"
 #include <cstddef>

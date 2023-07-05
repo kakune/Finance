@@ -1,7 +1,8 @@
-#ifndef FFT_MODULE_H
-#define FFT_MODULE_H
+#ifndef NUMERICAL_FFT_H
+#define NUMERICAL_FFT_H
 #include <complex>
 #include <vector>
+#define PI 3.1415926535897932384626433832795028841971
 
 class DFT
 {
@@ -26,5 +27,7 @@ public:
     template <typename T> std::vector< std::complex<double> > calcInverseFFT(const std::vector<T>&);
 
 };
+
+#include "fft.tpp"
 
 #endif

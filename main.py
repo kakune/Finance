@@ -11,7 +11,7 @@ param_file = os.path.join(dir_path, "parameters/parameters.ini")
 output_file = os.path.join(dir_path, "build/out/out")
 figure_file = os.path.join(dir_path, "out/graph.png")
 
-sections = ["PARAM_BS","PARAM_SABR","PARAM_SV"]
+sections = ["PARAM_SV","PARAM_SV2"]
 
 if __name__=="__main__":
     # read params

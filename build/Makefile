@@ -117,19 +117,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named my_library
-
-# Build rule for target.
-my_library: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 my_library
-.PHONY : my_library
-
-# fast build rule for target.
-my_library/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/build
-.PHONY : my_library/fast
-
-#=============================================================================
 # Target rules for targets named out
 
 # Build rule for target.
@@ -141,6 +128,84 @@ out: cmake_check_build_system
 out/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/out.dir/build.make CMakeFiles/out.dir/build
 .PHONY : out/fast
+
+#=============================================================================
+# Target rules for targets named core
+
+# Build rule for target.
+core: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 core
+.PHONY : core
+
+# fast build rule for target.
+core/fast:
+	$(MAKE) $(MAKESILENT) -f src/core/CMakeFiles/core.dir/build.make src/core/CMakeFiles/core.dir/build
+.PHONY : core/fast
+
+#=============================================================================
+# Target rules for targets named numerical
+
+# Build rule for target.
+numerical: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 numerical
+.PHONY : numerical
+
+# fast build rule for target.
+numerical/fast:
+	$(MAKE) $(MAKESILENT) -f src/numerical/CMakeFiles/numerical.dir/build.make src/numerical/CMakeFiles/numerical.dir/build
+.PHONY : numerical/fast
+
+#=============================================================================
+# Target rules for targets named analytical
+
+# Build rule for target.
+analytical: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 analytical
+.PHONY : analytical
+
+# fast build rule for target.
+analytical/fast:
+	$(MAKE) $(MAKESILENT) -f src/analytical/CMakeFiles/analytical.dir/build.make src/analytical/CMakeFiles/analytical.dir/build
+.PHONY : analytical/fast
+
+#=============================================================================
+# Target rules for targets named option
+
+# Build rule for target.
+option: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 option
+.PHONY : option
+
+# fast build rule for target.
+option/fast:
+	$(MAKE) $(MAKESILENT) -f src/option/CMakeFiles/option.dir/build.make src/option/CMakeFiles/option.dir/build
+.PHONY : option/fast
+
+#=============================================================================
+# Target rules for targets named monte_carlo
+
+# Build rule for target.
+monte_carlo: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 monte_carlo
+.PHONY : monte_carlo
+
+# fast build rule for target.
+monte_carlo/fast:
+	$(MAKE) $(MAKESILENT) -f src/monte_carlo/CMakeFiles/monte_carlo.dir/build.make src/monte_carlo/CMakeFiles/monte_carlo.dir/build
+.PHONY : monte_carlo/fast
+
+#=============================================================================
+# Target rules for targets named fourier
+
+# Build rule for target.
+fourier: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 fourier
+.PHONY : fourier
+
+# fast build rule for target.
+fourier/fast:
+	$(MAKE) $(MAKESILENT) -f src/fourier/CMakeFiles/fourier.dir/build.make src/fourier/CMakeFiles/fourier.dir/build
+.PHONY : fourier/fast
 
 main_calc.o: main_calc.cpp.o
 .PHONY : main_calc.o
@@ -166,246 +231,6 @@ main_calc.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/out.dir/build.make CMakeFiles/out.dir/main_calc.cpp.s
 .PHONY : main_calc.cpp.s
 
-src/core/params.o: src/core/params.cpp.o
-.PHONY : src/core/params.o
-
-# target to build an object file
-src/core/params.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/core/params.cpp.o
-.PHONY : src/core/params.cpp.o
-
-src/core/params.i: src/core/params.cpp.i
-.PHONY : src/core/params.i
-
-# target to preprocess a source file
-src/core/params.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/core/params.cpp.i
-.PHONY : src/core/params.cpp.i
-
-src/core/params.s: src/core/params.cpp.s
-.PHONY : src/core/params.s
-
-# target to generate assembly for a file
-src/core/params.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/core/params.cpp.s
-.PHONY : src/core/params.cpp.s
-
-src/fourier/vanilla.o: src/fourier/vanilla.cpp.o
-.PHONY : src/fourier/vanilla.o
-
-# target to build an object file
-src/fourier/vanilla.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/fourier/vanilla.cpp.o
-.PHONY : src/fourier/vanilla.cpp.o
-
-src/fourier/vanilla.i: src/fourier/vanilla.cpp.i
-.PHONY : src/fourier/vanilla.i
-
-# target to preprocess a source file
-src/fourier/vanilla.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/fourier/vanilla.cpp.i
-.PHONY : src/fourier/vanilla.cpp.i
-
-src/fourier/vanilla.s: src/fourier/vanilla.cpp.s
-.PHONY : src/fourier/vanilla.s
-
-# target to generate assembly for a file
-src/fourier/vanilla.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/fourier/vanilla.cpp.s
-.PHONY : src/fourier/vanilla.cpp.s
-
-src/monte_carlo/generator.o: src/monte_carlo/generator.cpp.o
-.PHONY : src/monte_carlo/generator.o
-
-# target to build an object file
-src/monte_carlo/generator.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/monte_carlo/generator.cpp.o
-.PHONY : src/monte_carlo/generator.cpp.o
-
-src/monte_carlo/generator.i: src/monte_carlo/generator.cpp.i
-.PHONY : src/monte_carlo/generator.i
-
-# target to preprocess a source file
-src/monte_carlo/generator.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/monte_carlo/generator.cpp.i
-.PHONY : src/monte_carlo/generator.cpp.i
-
-src/monte_carlo/generator.s: src/monte_carlo/generator.cpp.s
-.PHONY : src/monte_carlo/generator.s
-
-# target to generate assembly for a file
-src/monte_carlo/generator.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/monte_carlo/generator.cpp.s
-.PHONY : src/monte_carlo/generator.cpp.s
-
-src/monte_carlo/process.o: src/monte_carlo/process.cpp.o
-.PHONY : src/monte_carlo/process.o
-
-# target to build an object file
-src/monte_carlo/process.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/monte_carlo/process.cpp.o
-.PHONY : src/monte_carlo/process.cpp.o
-
-src/monte_carlo/process.i: src/monte_carlo/process.cpp.i
-.PHONY : src/monte_carlo/process.i
-
-# target to preprocess a source file
-src/monte_carlo/process.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/monte_carlo/process.cpp.i
-.PHONY : src/monte_carlo/process.cpp.i
-
-src/monte_carlo/process.s: src/monte_carlo/process.cpp.s
-.PHONY : src/monte_carlo/process.s
-
-# target to generate assembly for a file
-src/monte_carlo/process.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/monte_carlo/process.cpp.s
-.PHONY : src/monte_carlo/process.cpp.s
-
-src/numerical/fft.o: src/numerical/fft.cpp.o
-.PHONY : src/numerical/fft.o
-
-# target to build an object file
-src/numerical/fft.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/numerical/fft.cpp.o
-.PHONY : src/numerical/fft.cpp.o
-
-src/numerical/fft.i: src/numerical/fft.cpp.i
-.PHONY : src/numerical/fft.i
-
-# target to preprocess a source file
-src/numerical/fft.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/numerical/fft.cpp.i
-.PHONY : src/numerical/fft.cpp.i
-
-src/numerical/fft.s: src/numerical/fft.cpp.s
-.PHONY : src/numerical/fft.s
-
-# target to generate assembly for a file
-src/numerical/fft.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/numerical/fft.cpp.s
-.PHONY : src/numerical/fft.cpp.s
-
-src/numerical/find_root.o: src/numerical/find_root.cpp.o
-.PHONY : src/numerical/find_root.o
-
-# target to build an object file
-src/numerical/find_root.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/numerical/find_root.cpp.o
-.PHONY : src/numerical/find_root.cpp.o
-
-src/numerical/find_root.i: src/numerical/find_root.cpp.i
-.PHONY : src/numerical/find_root.i
-
-# target to preprocess a source file
-src/numerical/find_root.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/numerical/find_root.cpp.i
-.PHONY : src/numerical/find_root.cpp.i
-
-src/numerical/find_root.s: src/numerical/find_root.cpp.s
-.PHONY : src/numerical/find_root.s
-
-# target to generate assembly for a file
-src/numerical/find_root.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/numerical/find_root.cpp.s
-.PHONY : src/numerical/find_root.cpp.s
-
-src/numerical/integral.o: src/numerical/integral.cpp.o
-.PHONY : src/numerical/integral.o
-
-# target to build an object file
-src/numerical/integral.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/numerical/integral.cpp.o
-.PHONY : src/numerical/integral.cpp.o
-
-src/numerical/integral.i: src/numerical/integral.cpp.i
-.PHONY : src/numerical/integral.i
-
-# target to preprocess a source file
-src/numerical/integral.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/numerical/integral.cpp.i
-.PHONY : src/numerical/integral.cpp.i
-
-src/numerical/integral.s: src/numerical/integral.cpp.s
-.PHONY : src/numerical/integral.s
-
-# target to generate assembly for a file
-src/numerical/integral.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/numerical/integral.cpp.s
-.PHONY : src/numerical/integral.cpp.s
-
-src/option/european.o: src/option/european.cpp.o
-.PHONY : src/option/european.o
-
-# target to build an object file
-src/option/european.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/option/european.cpp.o
-.PHONY : src/option/european.cpp.o
-
-src/option/european.i: src/option/european.cpp.i
-.PHONY : src/option/european.i
-
-# target to preprocess a source file
-src/option/european.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/option/european.cpp.i
-.PHONY : src/option/european.cpp.i
-
-src/option/european.s: src/option/european.cpp.s
-.PHONY : src/option/european.s
-
-# target to generate assembly for a file
-src/option/european.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/option/european.cpp.s
-.PHONY : src/option/european.cpp.s
-
-src/option/implied_vol.o: src/option/implied_vol.cpp.o
-.PHONY : src/option/implied_vol.o
-
-# target to build an object file
-src/option/implied_vol.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/option/implied_vol.cpp.o
-.PHONY : src/option/implied_vol.cpp.o
-
-src/option/implied_vol.i: src/option/implied_vol.cpp.i
-.PHONY : src/option/implied_vol.i
-
-# target to preprocess a source file
-src/option/implied_vol.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/option/implied_vol.cpp.i
-.PHONY : src/option/implied_vol.cpp.i
-
-src/option/implied_vol.s: src/option/implied_vol.cpp.s
-.PHONY : src/option/implied_vol.s
-
-# target to generate assembly for a file
-src/option/implied_vol.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/option/implied_vol.cpp.s
-.PHONY : src/option/implied_vol.cpp.s
-
-src/option/option_core.o: src/option/option_core.cpp.o
-.PHONY : src/option/option_core.o
-
-# target to build an object file
-src/option/option_core.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/option/option_core.cpp.o
-.PHONY : src/option/option_core.cpp.o
-
-src/option/option_core.i: src/option/option_core.cpp.i
-.PHONY : src/option/option_core.i
-
-# target to preprocess a source file
-src/option/option_core.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/option/option_core.cpp.i
-.PHONY : src/option/option_core.cpp.i
-
-src/option/option_core.s: src/option/option_core.cpp.s
-.PHONY : src/option/option_core.s
-
-# target to generate assembly for a file
-src/option/option_core.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_library.dir/build.make CMakeFiles/my_library.dir/src/option/option_core.cpp.s
-.PHONY : src/option/option_core.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -414,41 +239,16 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... my_library"
+	@echo "... analytical"
+	@echo "... core"
+	@echo "... fourier"
+	@echo "... monte_carlo"
+	@echo "... numerical"
+	@echo "... option"
 	@echo "... out"
 	@echo "... main_calc.o"
 	@echo "... main_calc.i"
 	@echo "... main_calc.s"
-	@echo "... src/core/params.o"
-	@echo "... src/core/params.i"
-	@echo "... src/core/params.s"
-	@echo "... src/fourier/vanilla.o"
-	@echo "... src/fourier/vanilla.i"
-	@echo "... src/fourier/vanilla.s"
-	@echo "... src/monte_carlo/generator.o"
-	@echo "... src/monte_carlo/generator.i"
-	@echo "... src/monte_carlo/generator.s"
-	@echo "... src/monte_carlo/process.o"
-	@echo "... src/monte_carlo/process.i"
-	@echo "... src/monte_carlo/process.s"
-	@echo "... src/numerical/fft.o"
-	@echo "... src/numerical/fft.i"
-	@echo "... src/numerical/fft.s"
-	@echo "... src/numerical/find_root.o"
-	@echo "... src/numerical/find_root.i"
-	@echo "... src/numerical/find_root.s"
-	@echo "... src/numerical/integral.o"
-	@echo "... src/numerical/integral.i"
-	@echo "... src/numerical/integral.s"
-	@echo "... src/option/european.o"
-	@echo "... src/option/european.i"
-	@echo "... src/option/european.s"
-	@echo "... src/option/implied_vol.o"
-	@echo "... src/option/implied_vol.i"
-	@echo "... src/option/implied_vol.s"
-	@echo "... src/option/option_core.o"
-	@echo "... src/option/option_core.i"
-	@echo "... src/option/option_core.s"
 .PHONY : help
 
 

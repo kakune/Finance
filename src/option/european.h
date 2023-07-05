@@ -1,5 +1,5 @@
-#ifndef EUROPEAN_MODULE_H
-#define EUROPEAN_MODULE_H
+#ifndef OPTION_EUROPEAN_H
+#define OPTION_EUROPEAN_H
 
 #include <vector>
 #include <cstddef>
