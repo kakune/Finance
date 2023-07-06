@@ -33,34 +33,36 @@ double FourierPricingSV::calcCallValue()
     double spotp = b*spot + (1.0 - b) * L;
     double strikep = b*strike + (1.0 - b) * L;
     double logsk = std::log(spotp / strikep);
-    wMax = 5.0 / (eta * lambda * b * rhom * maturity) + 1.0;
     double thetaHat = theta - rho*eta*lambda*b*0.5;
+    double mu = thetaHat*thetaHat*0.5 / (eta*eta*lambda*lambda*b*b*rhom*rhom*rhom) + 0.125 / rhom;
+
     comp qZero = (rhom + I * rho)*thetaHat*(1.0 + theta*maturity) / (rhom * eta * eta) + (2.0*theta/(eta*eta)) * (std::log(2.0*rhom) + I * std::atan(rho / rhom));
     comp qInf = (rhom + I * rho)*(1.0 + theta*maturity) * lambda*b / eta;
-    comp iThree = std::exp(qZero+logsk*0.5) * integralR(qInf - I*logsk, 0.5, wMax);
+    comp qm = (theta/(eta*eta))*(maturity*mu*eta*lambda*b + 2.0*thetaHat*(rhom * I*rho) / (rhom*rhom*eta*lambda*b)) + mu*lambda*b/eta;
 
-    std::size_t nOmega = 500;
+    wMax = 5.0 / (eta * lambda * b * rhom * maturity);
+    while(std::abs(qm) > std::abs(-qInf*wMax + qZero)*tol*wMax)
+    {
+        wMax *= 2.0;
+    }
+
+    double iThree = std::real(std::exp(qZero+logsk*0.5) * integralR(qInf - I*logsk, 0.5, wMax));
     double deltaOmega = 0.1 / (lambda * b * std::sqrt(maturity));
-    std::function<comp(comp)> integrandTwo = [&](comp w){return std::exp((0.5+I*w)*logsk)*(q(0.5 + I*w) - std::exp(-qInf*w + qZero)) / (w*w +0.25); };
-    comp iTwo = oneDimIntegral(integrandTwo, comp(wMax, 0.0), comp(wMax, 0.0) + double(nOmega)*deltaOmega, nOmega);
 
-    std::function<comp(comp)> integrandOne = [&](comp w){return std::exp((0.5+I*w)*logsk)*(q(0.5 + I*w)) / (w*w +0.25); };
-    comp iOne = oneDimIntegral(integrandOne, comp(0.0, 0.0), comp(wMax, 0.0), nOmega);
+    std::function<double(double)> integrandTwo = [&](double w){return std::real(std::exp((0.5+I*w)*logsk)*(q(0.5 + I*w) - std::exp(-qInf*w + qZero))) / (w*w +0.25); };
+    double iTwo = oneDimIntegralCquadGSL(integrandTwo, wMax, wMax + double(nOmega)*deltaOmega);
 
-    // #include <iostream>
-    // std::cout << "real : " << std::real(iOne + iTwo + iThree) << std::endl;
-    // std::cout << "imag : " << std::imag(iOne + iTwo + iThree) << std::endl;
-    
-    // std::function<comp(comp)> integrandPoor = [&](comp w){return std::exp((0.5 + I*w) * logsk)*(q(0.5 + I*w)) / (w*w + 0.25); };
-    // comp iPoor =  oneDimIntegral(integrandPoor, comp(-100, 0.0), comp(100, 0.0), 100000);
+    std::function<double(double)> integrandOne = [&](double w){return std::real(std::exp((0.5 + I*w) * logsk)*(q(0.5 + I*w)) / (w*w + 0.25)); };
+    double iOne = oneDimIntegralCquadGSL(integrandOne, 0.0, wMax);
+
 
     BSObj.setRate(rate);
     BSObj.setSpot(spotp);
     BSObj.setStrike(strikep);
     BSObj.setMaturity(maturity);
     BSObj.setVol(lambda*b);
-    // return BSObj.payoffCall() / b - (strikep / (2.0 * PI * b)) * std::real(iPoor);
-    return BSObj.payoffCall() / b - (strikep / (2.0 * PI * b)) * std::real(iOne + iTwo + iThree);
+    
+    return BSObj.payoffCall() / b - (strikep / (PI * b)) * (iOne + iTwo + iThree);
 }
 
 

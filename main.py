@@ -24,7 +24,7 @@ if __name__=="__main__":
     labels = [str(params["COMMON"]["name"]) + " = " + str(params[section][params["COMMON"]["name"]])  for section in sections]
 
 
-    cmake(build_dir)
+    # cmake(build_dir)
     
     fig = None
     ax = None
