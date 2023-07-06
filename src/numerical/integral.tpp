@@ -25,15 +25,42 @@ T OneDimIntegration<T>::calcTrapzIntegral()
         result += integrand(variable);
     }
     result += 0.5 * integrand(regMax);
-    return result / double(nStep);
+    return result * (regMax - regMin) / double(nStep);
 }
 
 template <typename T>
-T oneDimIntegral(std::function <T(T)> func, T regMin, T regMax, std::size_t nStep = 50)
+T OneDimIntegration<T>::calcSimpsonIntegral()
+{
+    T result;
+    result = 0.5 * integrand(regMin);
+    T width = (regMax - regMin) / double(nStep);
+    T variable = regMin;
+    bool isOdd = true;
+    for(int i_ = 0; i_ < nStep - 1; i_++)
+    {
+        variable += width;
+        result += (1.0 + isOdd) * integrand(variable);
+    }
+    result += 0.5 * integrand(regMax);
+    return result * (2.0 / 3.0) * ((regMax - regMin) / double(nStep));
+}
+
+template <typename T>
+T oneDimTrapzIntegral(std::function <T(T)> func, T regMin, T regMax, std::size_t nStep = 50)
 {
     OneDimIntegration<T> IntObj;
     IntObj.setReg(regMin, regMax);
     IntObj.setNStep(nStep);
     IntObj.setIntegrand(func);
     return IntObj.calcTrapzIntegral();
+}
+
+template <typename T>
+T oneDimSimpsonIntegral(std::function <T(T)> func, T regMin, T regMax, std::size_t nStep = 50)
+{
+    OneDimIntegration<T> IntObj;
+    IntObj.setReg(regMin, regMax);
+    IntObj.setNStep(nStep);
+    IntObj.setIntegrand(func);
+    return IntObj.calcSimpsonIntegral();
 }
