@@ -3,21 +3,18 @@
 #define GAMMA 0.57721566490153286060651209008240243
 
 
-double exponentialIntegralOne(double x)
+double exponentialIntegralOne( double x )
 {
-    return -std::expint(-x);
+    return -std::expint( -x );
 }
 
-comp exponentialIntegral(comp z, double tol, int maxIter)
+comp exponentialIntegral( comp z, double tol, std::size_t maxIter )
 {
-    ExponentialIntegral EiObj;
-    EiObj.setZ(z);
-    EiObj.setTol(tol);
-    EiObj.setMaxIter(maxIter);
+    ExponentialIntegral EiObj( z, tol, maxIter );
     return EiObj.calcExponentialIntegral();
 }
 
-comp exponentialIntegralOne(comp z, double tol, int maxIter)
+comp exponentialIntegralOne(comp z, double tol, std::size_t maxIter)
 {
     comp dif(0.0, ((std::arg(z) > 0) - ((std::arg(z) < 0)))*PI);
     return - exponentialIntegral(-z, tol, maxIter) - dif;

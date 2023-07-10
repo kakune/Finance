@@ -8,24 +8,14 @@
 class EuropeanOption : public Option
 {
 public:
-    void set_spot_paths(std::vector< std::vector< double > > spot_paths_) override
-    {
-        spot_paths = spot_paths_;
-        num_path = spot_paths.size();
-        present_spots.resize(num_path);
-        for(int i = 0; i < num_path; i++)
-        {
-            present_spots.at(i) = spot_paths.at(i).back();
-        }
-    }
-    void calc_payoff_mean() override
+    void calcPayoffMean() override
     {
         double sum = 0;
-        for(int i = 0; i < num_path; i++)
+        for ( auto spot : getPresentSpots() )
         {
-            sum += payoff(present_spots.at(i));
+            sum += payoff( spot );
         }
-        payoff_mean = sum / double(num_path);
+        setPayoffMean( sum / double( getNumPath() ) );
     }
 };
 

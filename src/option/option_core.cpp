@@ -3,21 +3,21 @@
 
 double VirtualOption::payoff(double x)
 {
-    if(isSum) { return Option1->payoff(x) + Option2->payoff(x); }
+    if ( isSum ) { return Option1->payoff(x) + Option2->payoff(x); }
     else { return Option1->payoff(x) - Option2->payoff(x); }
 }
 
-void VirtualOption::calc_payoff_mean()
+void VirtualOption::calcPayoffMean()
 {
-    Option1->calc_payoff_mean();
-    Option2->calc_payoff_mean();
-    if(isSum)
+    Option1->calcPayoffMean();
+    Option2->calcPayoffMean();
+    if ( isSum )
     {
-        payoff_mean = Option1->get_payoff_mean() + Option2->get_payoff_mean();
+        setPayoffMean( Option1->getPayoffMean() + Option2->getPayoffMean() );
     }
     else
     {
-        payoff_mean = Option1->get_payoff_mean() - Option2->get_payoff_mean();
+        setPayoffMean( Option1->getPayoffMean() - Option2->getPayoffMean() );
     }
 }
 

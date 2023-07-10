@@ -4,16 +4,16 @@
 #include <functional>
 #include <gsl/gsl_integration.h>
 
-double oneDimIntegralCquadGSL(std::function<double(double)>, double, double);
-double oneDimIntegralQagiGSL(std::function<double(double)>);
-double oneDimIntegralQagiuGSL(std::function<double(double)>, double);
-double oneDimIntegralQagilGSL(std::function<double(double)>, double);
+double oneDimIntegralCquadGSL(const std::function<double(double)>&, double, double);
+double oneDimIntegralQagiGSL(const std::function<double(double)>&);
+double oneDimIntegralQagiuGSL(const std::function<double(double)>&, double);
+double oneDimIntegralQagilGSL(const std::function<double(double)>&, double);
 
 class OneDimIntegrationGSL
 {
-protected:
+private:
     double regMin, regMax;
-    std::function<double(double)> integrand;
+    std::function< double( double ) > integrand;
     double result, error;
     size_t nevals;
     gsl_function F;
@@ -23,9 +23,14 @@ protected:
         return integrator->integrand(x);
     }
 public:
-    void setReg(double regMin_, double regMax_){regMin = regMin_; regMax = regMax_;}
-    void setIntegrand(const std::function<double(double)>& integrand_){integrand = integrand_; F.function = &OneDimIntegrationGSL::gslFunction;
-    F.params = this;}
+    OneDimIntegrationGSL( const std::function<double(double)>& integrand_, double regMin_, double regMax_ )
+        : integrand( integrand_ ), regMin( regMin_ ), regMax( regMax_ )
+    {
+        F.function = &OneDimIntegrationGSL::gslFunction;
+        F.params = this;
+    }
+
+    double calcIntegrand( double x ) { return integrand(x); }
     double cquadIntegral();
     double qagiIntegral();
     double qagiuIntegral();

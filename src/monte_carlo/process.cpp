@@ -5,80 +5,129 @@
 #include <cmath>
 #include <limits>
 
-void BlackScholes::generate_spots()
+SpotProcess::SpotProcess( double initialSpot_, double maturity_, std::size_t numProcess_, std::size_t numTime_, std::size_t numGeneratorPeriod_ )
+  : initialSpot( initialSpot_ ), maturity( maturity_ ), numProcess( numProcess_ ), numTime( numTime_ ), Generator( numGeneratorPeriod_ )
 {
-  set_spots();
+    spots.resize(numProcess);
+    for(int i = 0; i < numProcess; i++)
+    {
+        spots.at(i).resize(numTime+1, initialSpot);
+    }
+
+    dt = maturity / double(numTime);
+}
+
+BlackScholes::BlackScholes( double initialSpot_, double maturity_, std::size_t numProcess_, std::size_t numTime_, std::size_t numGeneratorPeriod_, double vol_, double rate_ )
+  : SpotProcess( initialSpot_, maturity_, numProcess_, numTime_, numGeneratorPeriod_ ), vol( vol_ ), rate( rate_ ) {}
+
+StochasticVolatilityProcess::StochasticVolatilityProcess( double initialSpot_, double maturity_, std::size_t numProcess_, std::size_t numTime_, std::size_t numGeneratorPeriod_, double initialVol_, double rho_ )
+  : SpotProcess( initialSpot_, maturity_, numProcess_, numTime_, numGeneratorPeriod_ ), initialVol( initialVol_ ), rho( rho_ ), rhoc( std::sqrt(1.0 - rho*rho) )
+{
+  vols.resize( getNumProcess() );
+  for(int i = 0; i < getNumProcess(); i++)
+  {
+      vols.at(i).resize( getNumTime() + 1, initialVol);
+  }
+}
+
+SABR::SABR( double initialSpot_, double maturity_, std::size_t numProcess_, std::size_t numTime_, std::size_t numGeneratorPeriod_, double initialVol_, double rho_, double rate_, double beta_, double volvol_ )
+  : StochasticVolatilityProcess( initialSpot_, maturity_, numProcess_, numTime_, numGeneratorPeriod_, initialVol_, rho_ ), rate( rate_ ), beta( beta_ ), volvol( volvol_ ) {}
+
+SV::SV( double initialSpot_, double maturity_, std::size_t numProcess_, std::size_t numTime_, std::size_t numGeneratorPeriod_, double rho_, double rate_, double lambda_, double b_, double L_, double theta_, double eta_ )
+  : StochasticVolatilityProcess( initialSpot_, maturity_, numProcess_, numTime_, numGeneratorPeriod_, 1.0, rho_ ), rate( rate_ ), lambda( lambda_ ), b( b_ ), L( L_ ), theta( theta_ ), eta( eta_ ) {}
+
+std::vector< std::vector<double> >& BlackScholes::generateSpots()
+{
+  // setSpots();
+  double dt = getDt();
   double growth = (rate - 0.5 * vol * vol) * dt;
   double factor = vol * std::sqrt(dt);
 
-  for(int i = 0; i < num_process; i++)
+  for(int i = 0; i < getNumProcess(); i++)
   {
-    for(int j = 0; j < num_time; j++)
+    for(int j = 0; j < getNumTime(); j++)
     {
-      spots.at(i).at(j+1) = spots.at(i).at(j) * std::exp(growth + factor * Generator());
+      setSpotsElement(i, j+1, 
+      getSpotsElement(i, j) * std::exp(growth + factor * getRandom()));
       // spots.at(i).at(j+1) = spots.at(i).at(j) * (growth + distribution(generator) * factor);
     }
   }
+  return getSpots();
 }
 
-void SABR::generate_spots()
+std::vector< std::vector<double> >& SABR::generateSpots()
 {
-  set_spots();
-  set_vols();
-  Generator.set_num_time(num_time*2);
+  // setSpots();
+  // setVols();
+  // setGeneratorNumTime( getNumTime() * 2 );
+
+  double dt = getDt();
+  double sqDt = std::sqrt(dt);
+
+  double rho = getRho();
+  double rhoc = getRhoc();
+
   double growth = 1.0 + rate * dt;
-  double sq_dt = std::sqrt(dt);
-  double vol_growth = - 0.5 * volvol * volvol * dt;
+  double volGrowth = - 0.5 * volvol * volvol * dt;
 
-  for(int i = 0; i < num_process; i++)
+  for(int i = 0; i < getNumProcess(); i++)
   {
-    double log_spot = std::log(spots.at(i).at(0));
+    double logSpot = std::log(getSpotsElement( i, 0 ));
 
-    for(int j = 0; j < num_time; j++)
+    for(int j = 0; j < getNumTime(); j++)
     {
-      double brown1 = sq_dt * Generator();
-      double brown2 = rho * brown1 + rhom * sq_dt * Generator();
-      double factor = vols.at(i).at(j) * std::pow(spots.at(i).at(j), beta - 1);
+      double brown1 = sqDt * getRandom();
+      double brown2 = rho * brown1 + rhoc * sqDt * getRandom();
+      double factor = getVolsElement( i, j ) * std::pow(getSpotsElement(i, j), beta - 1);
 
-      log_spot += factor * brown1 + (rate - 0.5 * factor * factor) * dt;
+      logSpot += factor * brown1 + (rate - 0.5 * factor * factor) * dt;
 
-      vols.at(i).at(j+1) = vols.at(i).at(j) * std::exp(volvol * brown2 + vol_growth);
-      spots.at(i).at(j+1) = std::exp(log_spot);
+      setVolsElement( i, j+1, getVolsElement( i, j ) * std::exp(volvol * brown2 + volGrowth) );
+      setSpotsElement( i, j+1, std::exp(logSpot) );
 
     }
   }
+
+  return getSpots();
 }
 
-void SV::generate_spots()
+std::vector< std::vector<double> >& SV::generateSpots()
 {
-  set_spots();
-  set_vols();
-  Generator.set_num_time(num_time*2);
+  // setInitialVol(1.0);
+  // setSpots();
+  // setVols();
+  // setGeneratorNumTime( getNumTime() * 2 );
+
+  double dt = getDt();
+  double sqDt = std::sqrt(dt);
+
+  double rho = getRho();
+  double rhoc = getRhoc();
 
   double discrep = (1.0 - b) * L;
-  double sq_dt = std::sqrt(dt);
-  double vol_growth = theta - 0.5 * eta * eta;
+  double volGrowth = theta - 0.5 * eta * eta;
 
 
-  for(int i = 0; i < num_process; i++)
+  for(int i = 0; i < getNumProcess(); i++)
   {
-    double log_spot = std::log(spots.at(i).at(0));
-    double log_vol = std::log(vols.at(i).at(0));
+    double logSpot = std::log(getSpotsElement( i, 0 ));
+    double logVol = std::log(getVolsElement( i, 0 ) );
 
-    for(int j = 0; j < num_time; j++)
+    for(int j = 0; j < getNumTime(); j++)
     {
-      double brown1 = sq_dt * Generator();
-      double brown2 = rho * brown1 + rhom * sq_dt * Generator();
-      double sq_vol = std::sqrt(vols.at(i).at(j));
-      double factor = lambda * (b + discrep / spots.at(i).at(j)) * sq_vol;
+      double brown1 = sqDt * getRandom();
+      double brown2 = rho * brown1 + rhoc * sqDt * getRandom();
+      double sqVol = std::sqrt(getVolsElement( i, j ));
+      double factor = lambda * (b + discrep / getSpotsElement( i, j )) * sqVol;
 
-      log_spot += factor * brown1  - 0.5 * factor * factor * dt + rate * dt;
-      log_vol += (eta / sq_vol) * brown2 + (vol_growth / vols.at(i).at(j) - theta) * dt;
+      logSpot += factor * brown1  - 0.5 * factor * factor * dt + rate * dt;
+      logVol += (eta / sqVol) * brown2 + (volGrowth / getVolsElement( i, j ) - theta) * dt;
 
-      vols.at(i).at(j+1) = std::max(std::exp(log_vol), std::numeric_limits<double>::epsilon());
-      spots.at(i).at(j+1) = std::exp(log_spot);
-      // spots.at(i).at(j+1) = spots.at(i).at(j) + lambda * (b*spots.at(i).at(j) + discrep) * sq_vol * brown1;
-      // vols.at(i).at(j+1) = std::max(vols.at(i).at(j) + theta * (1.0 - vols.at(i).at(j)) * dt + eta * sq_vol * brown2, 0.0);
+      setVolsElement( i, j+1, std::max(std::exp(logVol), std::numeric_limits<double>::epsilon()) );
+      setSpotsElement( i, j+1, std::exp(logSpot) );
+      // spots.at(i).at(j+1) = spots.at(i).at(j) + lambda * (b*spots.at(i).at(j) + discrep) * sqVol * brown1;
+      // vols.at(i).at(j+1) = std::max(vols.at(i).at(j) + theta * (1.0 - vols.at(i).at(j)) * dt + eta * sqVol * brown2, 0.0);
     }
   }
+  return getSpots();
 }

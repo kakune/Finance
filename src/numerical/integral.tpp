@@ -1,15 +1,15 @@
 template <typename T>
 class OneDimIntegration
 {
-protected:
+private:
     T regMin, regMax;
     std::size_t nStep;
-    std::function<T(T)> integrand;
+    std::function< T( T ) > integrand;
 public:
-    void setReg(T regMin_, T regMax_){regMin = regMin_; regMax = regMax_;}
-    void setNStep(std::size_t nStep_){nStep = nStep_;}
-    void setIntegrand(std::function<T(T)> integrand_){integrand = integrand_;}
+    OneDimIntegration( const std::function< T ( T ) >& integrand_, double regMin_, double regMax_, std::size_t nStep_ = 50 )
+        : integrand( integrand_ ), regMin( regMin_ ), regMax( regMax_ ), nStep( nStep_ ) {}
     T calcTrapzIntegral();
+    T calcSimpsonIntegral();
 };
 
 template <typename T>
@@ -46,21 +46,15 @@ T OneDimIntegration<T>::calcSimpsonIntegral()
 }
 
 template <typename T>
-T oneDimTrapzIntegral(std::function <T(T)> func, T regMin, T regMax, std::size_t nStep = 50)
+T oneDimTrapzIntegral(const std::function < T ( T ) >& func, T regMin, T regMax, std::size_t nStep = 50)
 {
-    OneDimIntegration<T> IntObj;
-    IntObj.setReg(regMin, regMax);
-    IntObj.setNStep(nStep);
-    IntObj.setIntegrand(func);
+    OneDimIntegration<T> IntObj( func, regMin, regMax, nStep );
     return IntObj.calcTrapzIntegral();
 }
 
 template <typename T>
-T oneDimSimpsonIntegral(std::function <T(T)> func, T regMin, T regMax, std::size_t nStep = 50)
+T oneDimSimpsonIntegral(const std::function < T ( T ) >& func, T regMin, T regMax, std::size_t nStep = 50)
 {
-    OneDimIntegration<T> IntObj;
-    IntObj.setReg(regMin, regMax);
-    IntObj.setNStep(nStep);
-    IntObj.setIntegrand(func);
+    OneDimIntegration<T> IntObj( func, regMin, regMax, nStep );
     return IntObj.calcSimpsonIntegral();
 }

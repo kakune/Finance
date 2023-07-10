@@ -2,9 +2,8 @@
 #include <numerical/special_functions.h>
 #include <numerical/integral.h>
 #include <functional>
-#define PI 3.1415926535897932384626433832795028841971
 
-comp FourierPricingSV::phiZ ( comp v, comp u )
+comp FourierPricingSV::phiZ( const comp& v, const comp& u ) const
 {
     comp thetap = theta - rho*eta*lambda*b*u;
     comp gamma = std::sqrt(thetap * thetap - 2.0 * eta * eta * v);
@@ -14,13 +13,13 @@ comp FourierPricingSV::phiZ ( comp v, comp u )
     return std::exp(A + B);
 }
 
-comp FourierPricingSV::q ( comp u )
+comp FourierPricingSV::q( const comp& u ) const
 {
     comp var = 0.5 * lambda * lambda * b * b * u * (u - 1.0);
     return phiZ(var, u) - std::exp(var*maturity);
 }
 
-comp FourierPricingSV::integralR ( comp z, double a, double c )
+comp FourierPricingSV::integralR( const comp& z, const double& a, const double& c ) const
 {
     comp ia(0.0, a);
     comp eiaz = std::exp(ia*z);
@@ -34,13 +33,13 @@ double FourierPricingSV::calcCallValue()
     double strikep = b*strike + (1.0 - b) * L;
     double logsk = std::log(spotp / strikep);
     double thetaHat = theta - rho*eta*lambda*b*0.5;
-    double mu = thetaHat*thetaHat*0.5 / (eta*eta*lambda*lambda*b*b*rhom*rhom*rhom) + 0.125 / rhom;
+    double mu = thetaHat*thetaHat*0.5 / (eta*eta*lambda*lambda*b*b*rhoc*rhoc*rhoc) + 0.125 / rhoc;
 
-    comp qZero = (rhom + I * rho)*thetaHat*(1.0 + theta*maturity) / (rhom * eta * eta) + (2.0*theta/(eta*eta)) * (std::log(2.0*rhom) + I * std::atan(rho / rhom));
-    comp qInf = (rhom + I * rho)*(1.0 + theta*maturity) * lambda*b / eta;
-    comp qm = (theta/(eta*eta))*(maturity*mu*eta*lambda*b + 2.0*thetaHat*(rhom * I*rho) / (rhom*rhom*eta*lambda*b)) + mu*lambda*b/eta;
+    comp qZero = (rhoc + I * rho)*thetaHat*(1.0 + theta*maturity) / (rhoc * eta * eta) + (2.0*theta/(eta*eta)) * (std::log(2.0*rhoc) + I * std::atan(rho / rhoc));
+    comp qInf = (rhoc + I * rho)*(1.0 + theta*maturity) * lambda*b / eta;
+    comp qm = (theta/(eta*eta))*(maturity*mu*eta*lambda*b + 2.0*thetaHat*(rhoc * I*rho) / (rhoc*rhoc*eta*lambda*b)) + mu*lambda*b/eta;
 
-    wMax = 5.0 / (eta * lambda * b * rhom * maturity);
+    wMax = 5.0 / (eta * lambda * b * rhoc * maturity);
     while(std::abs(qm) > std::abs(-qInf*wMax + qZero)*tol*wMax)
     {
         wMax *= 2.0;
@@ -56,13 +55,14 @@ double FourierPricingSV::calcCallValue()
     double iOne = oneDimIntegralCquadGSL(integrandOne, 0.0, wMax);
 
 
-    BSObj.setRate(rate);
-    BSObj.setSpot(spotp);
-    BSObj.setStrike(strikep);
-    BSObj.setMaturity(maturity);
-    BSObj.setVol(lambda*b);
+    AnalyticalBlackScholesBuilder BSBuilder;
+    BSBuilder.setRate( rate );
+    BSBuilder.setSpot( spotp );
+    BSBuilder.setStrike( strikep );
+    BSBuilder.setMaturity( maturity );
+    BSBuilder.setVol( lambda*b );
     
-    return BSObj.payoffCall() / b - (strikep / (PI * b)) * (iOne + iTwo + iThree);
+    return BSBuilder.build().payoffCall() / b - (strikep / (M_PI * b)) * (iOne + iTwo + iThree);
 }
 
 

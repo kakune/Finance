@@ -60,34 +60,27 @@ double OneDimIntegrationGSL::qagilIntegral()
     return result;
 }
 
-double oneDimIntegralCquadGSL(std::function<double(double)> integrand, double regMin, double regMax)
+double oneDimIntegralCquadGSL(const std::function<double(double)>& integrand, double regMin, double regMax)
 {
-    OneDimIntegrationGSL GSLObj;
-    GSLObj.setReg(regMin, regMax);
-    GSLObj.setIntegrand(integrand);
+    OneDimIntegrationGSL GSLObj(integrand, regMin, regMax);
     return GSLObj.cquadIntegral();
 }
 
-double oneDimIntegralQagiGSL(std::function<double(double)> integrand)
+double oneDimIntegralQagiGSL(const std::function<double(double)>& integrand)
 {
-    OneDimIntegrationGSL GSLObj;
-    GSLObj.setIntegrand(integrand);
+    OneDimIntegrationGSL GSLObj(integrand, 0.0, 0.0);
     return GSLObj.qagiIntegral();
 }
 
-double oneDimIntegralQagiuGSL(std::function<double(double)> integrand, double regMin)
+double oneDimIntegralQagiuGSL(const std::function<double(double)>& integrand, double regMin)
 {
-    OneDimIntegrationGSL GSLObj;
-    GSLObj.setReg(regMin, 0.0);
-    GSLObj.setIntegrand(integrand);
+    OneDimIntegrationGSL GSLObj(integrand, regMin, 0.0);
     return GSLObj.qagiuIntegral();
 }
 
-double oneDimIntegralQagilGSL(std::function<double(double)> integrand, double regMax)
+double oneDimIntegralQagilGSL(const std::function<double(double)>& integrand, double regMax)
 {
-    OneDimIntegrationGSL GSLObj;
-    GSLObj.setReg(0.0, regMax);
-    GSLObj.setIntegrand(integrand);
+    OneDimIntegrationGSL GSLObj(integrand, 0.0, regMax);
     return GSLObj.qagilIntegral();
 }
 

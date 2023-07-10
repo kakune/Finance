@@ -6,8 +6,8 @@
 typedef std::complex<double> comp;
 
 // See https://www.sci.utah.edu/~vpegorar/research/2011_JGT.pdf
-comp exponentialIntegral(comp z, double tol = 1e-6, int maxIter = 10000);
-comp exponentialIntegralOne(comp z, double tol = 1e-6, int maxIter = 10000);
+comp exponentialIntegral(comp z, double tol = 1e-6, std::size_t maxIter = 10000);
+comp exponentialIntegralOne(comp z, double tol = 1e-6, std::size_t maxIter = 10000);
 double exponentialIntegral(double);
 comp eiAsymptoticSeries(comp);
 comp eiContinuedFraction(comp);
@@ -18,14 +18,13 @@ class ExponentialIntegral
 private:
     comp z;
     double rez, imz, r;
-    double tol = 1e-6;
-    int maxIter = 10000;
+    double tol;
+    std::size_t maxIter;
     bool isConverge = false;
 
 public:
-    void setZ(comp z_){z = z_;}
-    void setTol(double tol_){tol = tol_;}
-    void setMaxIter(int maxIter_){maxIter = maxIter_;}
+    ExponentialIntegral( comp z_, double tol_ = 1e-6, std::size_t maxIter_ = 10000 )
+        : z( z_ ), tol( tol_ ), maxIter( maxIter_ ) {}
     comp eiAsymptoticSeries();
     comp eiContinuedFraction();
     comp eiPowerSeries();
