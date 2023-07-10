@@ -22,7 +22,6 @@ add_subdirectory(src/numerical)
 add_subdirectory(src/analytical)
 add_subdirectory(src/option)
 add_subdirectory(src/monte_carlo)
-add_subdirectory(src/fourier)
 
 # インクルードパスを設定
 include_directories(${PROJECT_SOURCE_DIR}/src)
@@ -31,4 +30,4 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 add_executable(out "main_calc.cpp")
 
 # ライブラリをリンク
-target_link_libraries(out core numerical analytical option monte_carlo fourier)
+target_link_libraries(out core numerical analytical option monte_carlo)
