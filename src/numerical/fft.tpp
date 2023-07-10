@@ -1,9 +1,9 @@
 template <typename T>
-std::vector< std::complex<double> > DFT::calcDFT(const std::vector<T>& vec)
+std::vector< std::complex<double> > calcDFT( const std::vector<T>& vec )
 {
-    nPoint = vec.size();
+    std::size_t nPoint = vec.size();
     std::vector< std::complex<double> > result(nPoint, 0.0);
-    std::complex factor(0.0,-2.0*PI/nPoint);
+    std::complex factor(0.0,-2.0*M_PI/double(nPoint));
     for(int i = 0; i < nPoint; i++)
     {
         for(int j = 0; j < nPoint; j++)
@@ -15,9 +15,9 @@ std::vector< std::complex<double> > DFT::calcDFT(const std::vector<T>& vec)
 }
 
 template <typename T>
-std::vector< std::complex<double> > DFT::calcInverseDFT(const std::vector<T>& vec)
+std::vector< std::complex<double> > calcInverseDFT( const std::vector<T>& vec )
 {
-    nPoint = vec.size();
+    std::size_t nPoint = vec.size();
     std::vector<T> vecConj(nPoint);
     for(int i = 0; i < nPoint; i++)
     {
@@ -32,7 +32,7 @@ std::vector< std::complex<double> > DFT::calcInverseDFT(const std::vector<T>& ve
 }
 
 template <typename T>
-void FFT::bitReverse(std::vector<T>& vec)
+void bitReverse( std::vector<T>& vec )
 {
     for (int i = 0; i < vec.size(); i++)
     {
@@ -50,11 +50,11 @@ void FFT::bitReverse(std::vector<T>& vec)
 }
 
 template <typename T>
-std::vector< std::complex<double> > FFT::calcFFT(const std::vector<T>& vec)
+std::vector< std::complex<double> > calcFFT(const std::vector<T>& vec)
 {
-    nPoint = vec.size();
-    if(!isPow2(nPoint)){throw std::invalid_argument("Length must be pow of 2.");}
-    std::vector< std::complex<double> > result(nPoint);
+    std::size_t nPoint = vec.size();
+    if(!isPow2( nPoint )){throw std::invalid_argument("Length must be pow of 2.");}
+    std::vector< std::complex<double> > result( nPoint );
     for(int i = 0; i < nPoint; i++)
     {
         result.at(i) = std::complex<double>(vec.at(i));
@@ -65,10 +65,10 @@ std::vector< std::complex<double> > FFT::calcFFT(const std::vector<T>& vec)
 }
 
 template <typename T>
-std::vector< std::complex<double> > FFT::calcInverseFFT(const std::vector<T>& vec)
+std::vector< std::complex<double> > calcInverseFFT(const std::vector<T>& vec)
 {
-    nPoint = vec.size();
-    std::vector<T> vecConj(nPoint);
+    std::size_t nPoint = vec.size();
+    std::vector<T> vecConj( nPoint );
     for(int i = 0; i < nPoint; i++)
     {
         vecConj.at(i) = std::conj(vec.at(i));
@@ -76,7 +76,7 @@ std::vector< std::complex<double> > FFT::calcInverseFFT(const std::vector<T>& ve
     std::vector< std::complex<double> > result = calcFFT(vecConj);
     for(int i = 0; i < nPoint; i++)
     {
-        result.at(i) = std::conj(result.at(i)) / double(nPoint);
+        result.at(i) = std::conj(result.at(i)) / double( nPoint );
     }
     return result;
 }

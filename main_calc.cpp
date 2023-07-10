@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <limits>
 #include <variant>
+#include <utility>
 #include <core/params.h>
 #include <monte_carlo/process.h>
 #include <option/european.h>
@@ -16,70 +17,72 @@ void setStrikeToOptions(const std::vector<std::shared_ptr<T> >& Objs, const doub
 {
    for(std::shared_ptr<T> Obj : Objs)
    {
-        Obj->set_strike(strike);
+        Obj->setStrike(strike);
    }
 }
 
-template <class T, class U>
-void setOption(const std::shared_ptr<T>& Obj, U& SpotObj)
+template <class T>
+void setOption(const std::shared_ptr<T>& Obj, const std::vector < std::vector<double> >& spots)
 {
     static_assert(std::is_base_of<Option, T>::value, "T must be a descendant of Option");
-    Obj->set_spot_paths(SpotObj.get_spots());
-    Obj->calc_payoff_mean();
+    Obj->setSpotPaths(spots);
+    Obj->calcPayoffMean();
 }
+
 
 template <class T>
-void generateSpots(T& SpotObj)
+void setSpotInitial(T& SpotBuilder, Parameters& params)
 {
-    SpotObj.generate_spots();
+    SpotBuilder.setNumProcess( params.data["COMMON"]["num_process"]);
+    SpotBuilder.setNumTime( params.data["COMMON"]["num_time"] );
+    SpotBuilder.setMaturity( params.data["COMMON"]["maturity"] );
 }
 
-template <class T>
-void setSpotInitial(T& SpotObj, Parameters& params)
+void setSpot(BlackScholesBuilder& SpotBuilder, Parameters& params, const std::string& section)
 {
-    SpotObj.set_num_process(params.data["COMMON"]["num_process"]);
-    SpotObj.set_time(params.data["COMMON"]["num_time"], params.data["COMMON"]["maturity"]);
+    SpotBuilder.setInitialSpot(params.data[section]["initial_spot"]);
+    SpotBuilder.setVol(params.data[section]["vol"]);
+    SpotBuilder.setRate(params.data["COMMON"]["rate"]);
 }
 
-void setSpot(BlackScholes& SpotObj, Parameters& params, const std::string& section)
+void setSpot(SABRBuilder& SpotBuilder, Parameters& params, const std::string& section)
 {
-    SpotObj.set_initial_spot(params.data[section]["initial_spot"]);
-    SpotObj.set_vol_rate(params.data[section]["vol"], params.data["COMMON"]["rate"]);
+    SpotBuilder.setInitialSpot(params.data[section]["initial_spot"]);
+    SpotBuilder.setInitialVol(params.data[section]["initial_vol"]);
+    SpotBuilder.setRho(params.data[section]["rho"]);
+    SpotBuilder.setRate(params.data["COMMON"]["rate"]);
+    SpotBuilder.setVolvol(params.data[section]["volvol"]);
+    SpotBuilder.setBeta(params.data[section]["beta"]);
 }
 
-void setSpot(SABR& SpotObj, Parameters& params, const std::string& section)
+void setSpot(SVBuilder& SpotBuilder, Parameters& params, const std::string& section)
 {
-    SpotObj.set_initial_spot(params.data[section]["initial_spot"]);
-    SpotObj.set_initial_vol(params.data[section]["initial_vol"]);
-    SpotObj.set_rho_rate(params.data[section]["rho"], params.data["COMMON"]["rate"]);
-    SpotObj.set_volvol_beta(params.data[section]["volvol"], params.data[section]["beta"]);
-}
-
-void setSpot(SV& SpotObj, Parameters& params, const std::string& section)
-{
-    SpotObj.set_initial_spot(params.data[section]["initial_spot"]);
-    SpotObj.set_rho_rate(params.data[section]["rho"], params.data["COMMON"]["rate"]);
-    SpotObj.set_params_spot(params.data[section]["lambda"], params.data[section]["b"], params.data[section]["L"]);
-    SpotObj.set_params_vol(params.data[section]["theta"], params.data[section]["eta"]);
+    SpotBuilder.setInitialSpot(params.data[section]["initial_spot"]);
+    SpotBuilder.setRho(params.data[section]["rho"]);
+    SpotBuilder.setRate(params.data["COMMON"]["rate"]);
+    SpotBuilder.setLambda(params.data[section]["lambda"]);
+    SpotBuilder.setB(params.data[section]["b"]);
+    SpotBuilder.setL(params.data[section]["L"]);
+    SpotBuilder.setTheta(params.data[section]["theta"]);
+    SpotBuilder.setEta(params.data[section]["eta"]);
 }
 
 void showIV(const std::vector<double>& variable, const std::vector<double>& result, Parameters& params, const std::string& section)
 {
     params.initVariable();
-    ImpliedVolatility ImpVolObj;
-    ImpVolObj.setRate(params.data["COMMON"]["rate"]);
-    ImpVolObj.setMaturity(params.data["COMMON"]["maturity"]);
-    ImpVolObj.setMaxIter(params.data["COMMON"]["maxIter"]);
-    ImpVolObj.setTol(params.data["COMMON"]["tol"]);
-    ImpVolObj.setReg(params.data["COMMON"]["volMin"], params.data["COMMON"]["volMax"]);
+    ImpliedVolatilityBuilder ImpVolBuilder;
+    ImpVolBuilder.setRate(params.data["COMMON"]["rate"]);
+    ImpVolBuilder.setMaturity(params.data["COMMON"]["maturity"]);
+    ImpVolBuilder.setMaxIter(params.data["COMMON"]["maxIter"]);
+    ImpVolBuilder.setTol(params.data["COMMON"]["tol"]);
+    ImpVolBuilder.setVolReg(params.data["COMMON"]["volMin"], params.data["COMMON"]["volMax"]);
 
     int i = 0;
     while( params.updateVariable() )
     {
-        ImpVolObj.setSpot( params.data[section]["initial_spot"] );
-        ImpVolObj.setStrike( params.data[section]["strike"] );
-        ImpVolObj.setCallValue( result.at(i) );
-        std::cout << variable.at(i) << "," << ImpVolObj.calcImpliedVol() << std::endl;
+        ImpVolBuilder.setSpot( params.data[section]["initial_spot"] );
+        ImpVolBuilder.setStrike( params.data[section]["strike"] );
+        std::cout << variable.at(i) << "," << ImpVolBuilder.build().calcImpliedVol( result.at(i) ) << std::endl;
         i++;
     }
 }
@@ -105,62 +108,78 @@ int main(int argc, char* argv[])
 
     if (params.sdata[section]["method"] == "MC")
     {
-    std::shared_ptr<EuropeanCallOption> OptionObj = std::make_shared<EuropeanCallOption>();
-    std::shared_ptr<EuropeanPutOption> PutObj = std::make_shared<EuropeanPutOption>();
-    std::vector< std::shared_ptr<Call> > CallVector;
-    std::vector< std::shared_ptr<Put> > PutVector;
-    CallVector.push_back(OptionObj);
-    PutVector.push_back(PutObj);
-    // PutVector.push_back(PutObj);
+        std::shared_ptr<EuropeanCallOption> OptionObj = std::make_shared<EuropeanCallOption>();
+        std::shared_ptr<EuropeanPutOption> PutObj = std::make_shared<EuropeanPutOption>();
+        std::vector< std::shared_ptr<Call> > CallVector;
+        std::vector< std::shared_ptr<Put> > PutVector;
+        CallVector.push_back(OptionObj);
+        PutVector.push_back(PutObj);
+        // PutVector.push_back(PutObj);
 
-    // std::shared_ptr<VirtualOption> OptionObj = CallObj + PutObj;
+        // std::shared_ptr<VirtualOption> OptionObj = CallObj + PutObj;
 
-    std::variant<BlackScholes, SABR, SV> SpotObj;
-    
-    if(params.sdata[section]["Model"] == "BS" || params.sdata[section]["Model"] == "BlackScholes")
-    {SpotObj = BlackScholes();}
-    else if (params.sdata[section]["Model"] == "SABR")
-    {SpotObj = SABR();}
-    else if (params.sdata[section]["Model"] == "SV")
-    {SpotObj = SV();}
-    else
-    {
-        std::cerr << "Error : Such model has not been implemented. " << std::endl;
-        std::exit(1);
-    }
+        std::variant<BlackScholesBuilder, SABRBuilder, SVBuilder> SpotBuilder;
+        std::vector< std::vector<double> > spots;
 
-    std::visit([&](auto&& arg){setSpotInitial(arg, params);}, SpotObj);
-    std::visit([&](auto&& arg){setSpot(arg, params, section);}, SpotObj);
-    if(params.sdata["COMMON"]["path_each"] != "true"){std::visit([&](auto&& arg){generateSpots(arg);}, SpotObj);}
-    while( params.updateVariable() )
-    {
-        setStrikeToOptions(CallVector, params.data[section]["strike"]);
-        setStrikeToOptions(PutVector, params.data[section]["strike"]);
+        if(params.sdata[section]["Model"] == "BS" || params.sdata[section]["Model"] == "BlackScholes")
+        {SpotBuilder = BlackScholesBuilder();}
+        else if (params.sdata[section]["Model"] == "SABR")
+        {SpotBuilder = SABRBuilder();}
+        else if (params.sdata[section]["Model"] == "SV")
+        {SpotBuilder = SVBuilder();}
+        else
+        {
+            std::cerr << "Error : Such model has not been implemented. " << std::endl;
+            std::exit(1);
+        }
 
-        std::visit([&](auto&& arg){setSpot(arg, params, section);}, SpotObj);
-        if(params.sdata["COMMON"]["path_each"] == "true"){std::visit([&](auto&& arg){generateSpots(arg);}, SpotObj);}
-        std::visit([&](auto&& arg){setOption(OptionObj, arg);}, SpotObj);
+        std::visit([&](auto&& arg){setSpotInitial(arg, params);}, SpotBuilder);
+        std::visit([&](auto&& arg){setSpot(arg, params, section);}, SpotBuilder);
+        if ( params.sdata["COMMON"]["path_each"] != "true" )
+        {
+            std::visit([&](auto&& builder)
+            {
+                spots = std::move(builder.build().generateSpots());
+            }, SpotBuilder);
+        }
+        while( params.updateVariable() )
+        {
+            setStrikeToOptions(CallVector, params.data[section]["strike"]);
+            setStrikeToOptions(PutVector, params.data[section]["strike"]);
 
-        variable.push_back(params.getVariable());
-        result.push_back(OptionObj->get_payoff_mean() * df);
-    }
+            std::visit([&](auto&& arg){setSpot(arg, params, section);}, SpotBuilder);
+            if(params.sdata["COMMON"]["path_each"] == "true")
+            {
+                std::visit([&](auto&& builder)
+                {
+                    spots = std::move(builder.build().generateSpots());
+                }, SpotBuilder);
+            }
+            setOption(OptionObj, spots);
+
+            variable.push_back(params.getVariable());
+            result.push_back(OptionObj->getPayoffMean() * df);
+        }
     }
     else if (params.sdata[section]["method"] == "Fourier")
     {
-    FourierPricingSV FSVObj;
-    while( params.updateVariable() )
-    {
-        FSVObj.setMaturity(params.data["COMMON"]["maturity"]);
-        FSVObj.setRate(params.data["COMMON"]["rate"]);
-        FSVObj.setRho(params.data[section]["rho"]);
-        FSVObj.setParamsSpot(params.data[section]["lambda"],params.data[section]["b"],params.data[section]["L"]);
-        FSVObj.setParamsVol(params.data[section]["theta"],params.data[section]["eta"]);
-        FSVObj.setSpot(params.data[section]["initial_spot"]);
-        FSVObj.setStrike(params.data[section]["strike"]);
+        FourierPricingSVBuilder FSVBuilder;
+        while( params.updateVariable() )
+        {
+            FSVBuilder.setMaturity( params.data["COMMON"]["maturity"] );
+            FSVBuilder.setRate( params.data["COMMON"]["rate"] );
+            FSVBuilder.setRho( params.data[section]["rho"] );
+            FSVBuilder.setLambda( params.data[section]["lambda"] );
+            FSVBuilder.setB( params.data[section]["b"] );
+            FSVBuilder.setL( params.data[section]["L"] );
+            FSVBuilder.setTheta( params.data[section]["theta"]);
+            FSVBuilder.setEta( params.data[section]["eta"] );
+            FSVBuilder.setSpot( params.data[section]["initial_spot"] );
+            FSVBuilder.setStrike( params.data[section]["strike"] );
 
-        variable.push_back(params.getVariable());
-        result.push_back(FSVObj.calcCallValue() * df);
-    }
+            variable.push_back(params.getVariable());
+            result.push_back(FSVBuilder.build().calcCallValue() * df);
+        }
     }
     if ( params.sdata["COMMON"]["objective"] == "IV" || params.sdata["COMMON"]["objective"] == "impliedVolatility" )
     {

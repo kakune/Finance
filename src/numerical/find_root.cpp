@@ -7,63 +7,78 @@
 
 double BrentSolver::solve()
 {
-    double reg_min_temp = reg_min;
-    double reg_max_temp = reg_max;
-    double fa = objectiveFunction(reg_min_temp);
-    double fb = objectiveFunction(reg_max_temp);
+    double regMinTemp = getRegMin();
+    double regMaxTemp = getRegMax();
+    double fa = calcObjectiveFunction( regMinTemp );
+    double fb = calcObjectiveFunction( regMaxTemp );
 
-    if (fa * fb > 0) {
+    if (fa * fb > 0)
+    {
         // throw std::runtime_error("Root must be bracketed in BrentSolver.");
         return std::numeric_limits<double>::quiet_NaN();
     }
 
-    if (std::fabs(fa) < std::fabs(fb)) {
-        std::swap(reg_min_temp, reg_max_temp);
+    if (std::fabs(fa) < std::fabs(fb))
+    {
+        std::swap(regMinTemp, regMaxTemp);
         std::swap(fa, fb);
     }
 
-    double c = reg_min_temp, fc = fa;
+    double c = regMinTemp, fc = fa;
     bool mflag = true;
     double s = 0, d = 0;
 
-    for (int iter = 0; iter < maxIter; iter++) {
-        double fs = objectiveFunction(s);
+    for (int iter = 0; iter < getMaxIter(); iter++) {
+        double fs = calcObjectiveFunction(s);
 
-        if (fa != fc && fb != fc) {
-            s = reg_min_temp * fb * fc / ((fa - fb) * (fa - fc)) + reg_max_temp * fa * fc / ((fb - fa) * (fb - fc)) + c * fa * fb / ((fc - fa) * (fc - fb));
+        if (fa != fc && fb != fc)
+        {
+            s = regMinTemp * fb * fc / ((fa - fb) * (fa - fc)) + regMaxTemp * fa * fc / ((fb - fa) * (fb - fc)) + c * fa * fb / ((fc - fa) * (fc - fb));
         } else {
-            s = reg_max_temp - fb * (reg_max_temp - reg_min_temp) / (fb - fa);
+            s = regMaxTemp - fb * (regMaxTemp - regMinTemp) / (fb - fa);
         }
 
-        double tol1 = (3 * tol) / 2;
+        double tol1 = ( 3 * getTol() ) / 2;
         double tol2 = 2 * tol1;
 
-        if (!(3 * (reg_min_temp + tol1) < s && s < reg_max_temp - tol2) || (mflag && std::fabs(s - reg_max_temp) >= std::fabs(reg_max_temp - c) / 2) || (!mflag && std::fabs(s - reg_max_temp) >= std::fabs(c - d) / 2) || (mflag && std::fabs(reg_max_temp - c) < tol1) || (!mflag && std::fabs(c - d) < tol1)) {
-            s = (reg_min_temp + reg_max_temp) / 2;
+        if ( !(3 * (regMinTemp + tol1) < s && s < regMaxTemp - tol2)
+            || (mflag && std::fabs(s - regMaxTemp) >= std::fabs(regMaxTemp - c) / 2)
+            || (!mflag && std::fabs(s - regMaxTemp) >= std::fabs(c - d) / 2)
+            || (mflag && std::fabs(regMaxTemp - c) < tol1)
+            || (!mflag && std::fabs(c - d) < tol1) ) 
+        {
+            s = (regMinTemp + regMaxTemp) / 2;
             mflag = true;
-        } else {
+        }
+        else
+        {
             mflag = false;
         }
 
-        fs = objectiveFunction(s);
+        fs = calcObjectiveFunction(s);
         d = c;
-        c = reg_max_temp;
+        c = regMaxTemp;
 
-        if (fa * fs < 0) {
-            reg_max_temp = s;
+        if (fa * fs < 0)
+        {
+            regMaxTemp = s;
             fb = fs;
-        } else {
-            reg_min_temp = s;
+        }
+        else
+        {
+            regMinTemp = s;
             fa = fs;
         }
 
-        if (std::fabs(fa) < std::fabs(fb)) {
-            std::swap(reg_min_temp, reg_max_temp);
+        if ( std::fabs(fa) < std::fabs(fb) )
+        {
+            std::swap(regMinTemp, regMaxTemp);
             std::swap(fa, fb);
         }
 
-        if (std::fabs(reg_max_temp - reg_min_temp) < tol) {
-            return reg_max_temp;
+        if ( std::fabs(regMaxTemp - regMinTemp) < getTol() )
+        {
+            return regMaxTemp;
         }
     }
 

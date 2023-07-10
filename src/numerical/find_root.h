@@ -4,26 +4,87 @@
 
 class NonLinearSolver
 {
-protected:
-    double reg_min,reg_max;
+private:
+    std::function< double( double ) > objectiveFunction;
+    double regMin,regMax;
     double tol;
-    int maxIter;
-    std::function<double(double)> objectiveFunction;
+    std::size_t maxIter;
+
 public:
-    NonLinearSolver(double tol_ = 1e-5, int maxIter_ = 100): tol(tol_), maxIter(maxIter_) {}
-    void setReg(double reg_min_, double reg_max_){reg_min = reg_min_; reg_max = reg_max_;}
-    void setTol(double tol_){tol = tol_;}
-    void setMaxIter(int maxIter_){maxIter = maxIter_;}
-    void setFunction(std::function<double(double)> func_){objectiveFunction = func_;}
+    NonLinearSolver( const std::function< double( double ) >& objectiveFunction_,
+                    double regMin_,
+                    double regMax_,
+                    double tol_,
+                    std::size_t maxIter_ )
+                    : objectiveFunction( objectiveFunction_ ),
+                    regMin( regMin_ ),
+                    regMax( regMax_ ),
+                    tol( tol_ ),
+                    maxIter( maxIter_ ) {}
+
+    double getRegMin() const { return regMin; }
+    double getRegMax() const { return regMax; }
+    double getTol() const { return tol; }
+    std::size_t getMaxIter() const { return maxIter; }
+    double calcObjectiveFunction( double x ) const { return objectiveFunction( x ); }
     virtual double solve() = 0;
 };
 
 class BrentSolver : public NonLinearSolver
 {
 public:
-    BrentSolver(double tol_ = 1e-5, int maxIter_ = 100) : NonLinearSolver(tol_, maxIter_) {}
+    BrentSolver( const std::function< double( double ) >& objectiveFunction_,
+                    double regMin_,
+                    double regMax_,
+                    double tol_,
+                    std::size_t maxIter_ )
+                    : NonLinearSolver( objectiveFunction_, regMin_, regMax_, tol_, maxIter_ ) {}
 
     double solve() override;
 };
+
+
+
+class NonLinearSolverBuilder
+{
+protected:
+    double regMin, regMax;
+    double tol = 1e-5;
+    std::size_t maxIter = 100;
+    std::function< double( double ) > objectiveFunction;
+public:
+    NonLinearSolverBuilder& setReg( double regMin_, double regMax_ )
+    {
+        regMin = regMin_;
+        regMax = regMax_;
+        return *this;
+    }
+    NonLinearSolverBuilder& setObjectiveFunction( const std::function< double( double ) >& objectiveFunction_ )
+    {
+        objectiveFunction = objectiveFunction_;
+        return *this;
+    }
+    NonLinearSolverBuilder& setTol( double tol_ )
+    {
+        tol = tol_;
+        return *this;
+    }
+    NonLinearSolverBuilder& setMaxIter( std::size_t maxIter_ )
+    {
+        maxIter = maxIter_;
+        return *this;
+    }
+};
+
+class BrentSolverBuilder : public NonLinearSolverBuilder
+{
+public:
+    BrentSolver build()
+    {
+        return BrentSolver( objectiveFunction, regMin, regMax, tol, maxIter );
+    }
+};
+
+
 
 #endif

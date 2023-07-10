@@ -7,30 +7,69 @@
 class ImpliedVolatility
 {
 private:
-    int maxIter;
+    std::size_t maxIter;
     double tol, rate, maturity;
-    double callValue, spot, strike;
+    double spot, strike;
     double volMin, volMax;
     AnalyticalBlackScholes BSObj;
-    BrentSolver SolverObj;
+    BrentSolverBuilder SolverBuilder;
 
 public:
-    void setTol(double tol_ = 1e-5){tol = tol_; SolverObj.setTol(tol);}
-    void setReg(double volMin_, double volMax_){volMin = volMin_; volMax = volMax_; SolverObj.setReg(volMin, volMax);}
-    void setMaxIter(int maxIter_ = 100){maxIter = maxIter_; SolverObj.setMaxIter(maxIter);}
-    void setRate(double rate_){rate = rate_; BSObj.setRate(rate);}
-    void setMaturity(double maturity_){maturity = maturity_; BSObj.setMaturity(maturity);}
-    void setCallValue(double callValue_){callValue = callValue_;}
-    void setSpot(double spot_){spot = spot_; BSObj.setSpot(spot);}
-    void setStrike(double strike_){strike = strike_; BSObj.setStrike(strike);}
-    double getRate(){return rate;}
-    double getMaturity(){return maturity;}
-    double getCallValue(){return callValue;}
-    double getStrike(){return strike;}
+    ImpliedVolatility( double spot_, double strike_, double rate_, double maturity_, double volMin_, double volMax_, double tol_, std::size_t maxIter_ );
 
-    double calcImpliedVol();
+    double calcImpliedVol( double callValue );
+};
 
-
+class ImpliedVolatilityBuilder
+{
+private:
+    double rate = 0.0; 
+    double maturity;
+    double spot, strike;
+    double volMin, volMax;
+    double tol = 1e-5;
+    std::size_t maxIter = 100;
+public:
+    ImpliedVolatilityBuilder& setSpot( double spot_ )
+    {
+        spot = spot_;
+        return *this;
+    }
+    ImpliedVolatilityBuilder& setStrike( double strike_ )
+    {
+        strike = strike_;
+        return *this;
+    }
+    ImpliedVolatilityBuilder& setRate( double rate_ )
+    {
+        rate = rate_;
+        return *this;
+    }
+    ImpliedVolatilityBuilder& setMaturity( double maturity_ )
+    {
+        maturity = maturity_;
+        return *this;
+    }
+    ImpliedVolatilityBuilder& setVolReg( double volMin_, double volMax_ )
+    {
+        volMin = volMin_;
+        volMax = volMax_;
+        return *this;
+    }
+    ImpliedVolatilityBuilder& setTol( double tol_ )
+    {
+        tol = tol_;
+        return *this;
+    }
+    ImpliedVolatilityBuilder& setMaxIter( std::size_t maxIter_ )
+    {
+        maxIter = maxIter_;
+        return *this;
+    }
+    ImpliedVolatility build()
+    {
+        return ImpliedVolatility( spot, strike, rate, maturity, volMin, volMax, tol, maxIter );
+    }
 };
 
 #endif

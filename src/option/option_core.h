@@ -7,29 +7,41 @@
 
 class Option : public std::enable_shared_from_this<Option>
 {
-protected:
-    std::size_t num_path;
-    std::vector< double > present_spots;
-    std::vector< std::vector< double > > spot_paths;
-    double payoff_mean;
+private:
+    std::size_t numPath;
+    std::vector< double > presentSpots;
+    std::vector< std::vector< double > > spotPaths;
+    double payoffMean;
 public:
     virtual double payoff(double) = 0;
-    virtual void calc_payoff_mean() = 0;
-    double get_payoff_mean() const { return payoff_mean; }
-    virtual void set_present_spots(std::vector< double > present_spots_) {present_spots = present_spots_; num_path = present_spots.size();}
-    virtual void set_spot_paths(std::vector< std::vector< double > > spot_paths_)
+    virtual void calcPayoffMean() = 0;
+    void setPayoffMean( double payoffMean_ ) { payoffMean = payoffMean_; }
+
+    void setNumPath( std::size_t numPath_ ) { numPath = numPath_; }
+    virtual void setPresentSpots( const std::vector< double >& presentSpots_)
     {
-        spot_paths = spot_paths_;
-        num_path = spot_paths.size();
-        present_spots.resize(num_path);
-        for(int i = 0; i < num_path; i++)
+        presentSpots = presentSpots_;
+        setNumPath( presentSpots.size() );
+    }
+    virtual void setSpotPaths( const std::vector< std::vector< double > >& spotPaths_)
+    {
+        spotPaths = spotPaths_;
+        setNumPath( spotPaths.size() );
+        presentSpots.resize(numPath);
+        for(int i = 0; i < numPath; i++)
         {
-            present_spots.at(i) = spot_paths.at(i).back();
+            presentSpots.at(i) = spotPaths.at(i).back();
         }
     }
-    virtual std::vector< std::shared_ptr<Option> > get_all_Options()
+
+    const std::vector< std::vector< double > >& getSpotPaths() { return spotPaths; }
+    const std::vector< double >& getPresentSpots() { return presentSpots; }
+
+    double getPayoffMean() const { return payoffMean; }
+    std::size_t getNumPath() const { return numPath; }
+    virtual std::vector< std::shared_ptr<Option> > getAllOptions()
     {
-        std::vector< std::shared_ptr<Option> > result = {shared_from_this()};
+        std::vector< std::shared_ptr<Option> > result = { shared_from_this() };
         return result;
     }
 };
@@ -40,25 +52,25 @@ private:
     std::shared_ptr<Option> Option1, Option2;
     bool isSum;
 public:
-    void set_Options(std::shared_ptr<Option> Option1_, std::shared_ptr<Option> Option2_){Option1 = Option1_; Option2 = Option2_;}
-    void set_isSum(bool isSum_){isSum = isSum_;}
+    void setOptions(std::shared_ptr<Option> Option1_, std::shared_ptr<Option> Option2_){Option1 = Option1_; Option2 = Option2_;}
+    void setIsSum(bool isSum_){isSum = isSum_;}
     double payoff(double) override;
-    void calc_payoff_mean() override;
-    void set_spot_paths(std::vector< std::vector< double > > spot_paths_) override 
+    void calcPayoffMean() override;
+    void setSpotPaths( const std::vector< std::vector< double > >& spotPaths_) override 
     {
-        Option1->set_spot_paths(spot_paths_);
-        Option2->set_spot_paths(spot_paths_);
+        Option1->setSpotPaths(spotPaths_);
+        Option2->setSpotPaths(spotPaths_);
     }
-    void set_present_spots(std::vector< double > present_spots_) override
+    void setPresentSpots( const std::vector< double >& presentSpots_) override
     {
-        Option1->set_present_spots(present_spots_);
-        Option2->set_present_spots(present_spots_);
+        Option1->setPresentSpots(presentSpots_);
+        Option2->setPresentSpots(presentSpots_);
     }
-    std::vector< std::shared_ptr<Option> > get_all_Options() override
+    std::vector< std::shared_ptr<Option> > getAllOptions() override
     {
         std::vector< std::shared_ptr<Option> > result;
-        std::vector< std::shared_ptr<Option> > Option1s = Option1->get_all_Options();
-        std::vector< std::shared_ptr<Option> > Option2s = Option2->get_all_Options();
+        std::vector< std::shared_ptr<Option> > Option1s = Option1->getAllOptions();
+        std::vector< std::shared_ptr<Option> > Option2s = Option2->getAllOptions();
         result.reserve( Option1s.size() + Option2s.size() ); // preallocate memory
         result.insert( result.end(), Option1s.begin(), Option1s.end() );
         result.insert( result.end(), Option2s.begin(), Option2s.end() );
@@ -76,14 +88,15 @@ public:
 
 class Call : public Payoff
 {
-protected:
+private:
     double strike;
 public:
     double payoff(double x) override
     {
-        return std::max(x - strike, 0.0);
+        return std::max( x - strike , 0.0);
     }
-    void set_strike(double strike_){strike = strike_;}
+    void setStrike( double strike_ ) { strike = strike_; }
+    double getStrike() { return strike; }
 };
 
 class Put : public Payoff
@@ -93,30 +106,31 @@ protected:
 public:
     double payoff(double x) override
     {
-        return std::max(strike - x, 0.0);
+        return std::max( strike - x , 0.0);
     }
-    void set_strike(double strike_){strike = strike_;}
+    void setStrike( double strike_ ) { strike = strike_; }
+    double getStrike() { return strike; }
 };
 
 template <class T, class U>
-std::shared_ptr<VirtualOption> operator+(std::shared_ptr<T>& obj1, std::shared_ptr<U>& obj2)
+const std::shared_ptr<VirtualOption> operator+(const std::shared_ptr<T>& obj1, const std::shared_ptr<U>& obj2)
 {
     static_assert(std::is_base_of<Option, T>::value, "T must be a descendant of A");
     static_assert(std::is_base_of<Option, U>::value, "U must be a descendant of A");
     std::shared_ptr<VirtualOption> resultObj = std::make_shared<VirtualOption>();
-    resultObj->set_Options(obj1, obj2);
-    resultObj->set_isSum(true);
+    resultObj->setOptions(obj1, obj2);
+    resultObj->setIsSum(true);
     return resultObj;
 }
 
 template <class T, class U>
-std::shared_ptr<VirtualOption> operator-(std::shared_ptr<T>& obj1, std::shared_ptr<U>& obj2)
+const std::shared_ptr<VirtualOption> operator-(const std::shared_ptr<T>& obj1, const std::shared_ptr<U>& obj2)
 {
     static_assert(std::is_base_of<Option, T>::value, "T must be a descendant of A");
     static_assert(std::is_base_of<Option, U>::value, "U must be a descendant of A");
     std::shared_ptr<VirtualOption> resultObj = std::make_shared<VirtualOption>();
-    resultObj->set_Options(obj1, obj2);
-    resultObj->set_isSum(false);
+    resultObj->setOptions(obj1, obj2);
+    resultObj->setIsSum(false);
     return resultObj;
 }
 

@@ -11,7 +11,7 @@ param_file = os.path.join(dir_path, "parameters/parameters.ini")
 output_file = os.path.join(dir_path, "build/out/out")
 figure_file = os.path.join(dir_path, "out/graph.png")
 
-sections = ["PARAM_SV","PARAM_SV2"]
+sections = ["PARAM_SV","PARAM_SV2","PARAM_SABR","PARAM_BS"]
 
 if __name__=="__main__":
     # read params
@@ -24,7 +24,7 @@ if __name__=="__main__":
     labels = [str(params["COMMON"]["name"]) + " = " + str(params[section][params["COMMON"]["name"]])  for section in sections]
 
 
-    # cmake(build_dir)
+    cmake(build_dir)
     
     fig = None
     ax = None
